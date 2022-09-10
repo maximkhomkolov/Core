@@ -1,0 +1,73 @@
+package homework;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class ComplexExamples {
+
+    static class Person {
+        final int id;
+
+        final String name;
+
+        Person(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString() {
+            return "Person{" +
+                    "id=" + id +
+                    ", name='" + name + '\'' +
+                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Person person)) return false;
+            return getId() == person.getId() && getName().equals(person.getName());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getId(), getName());
+        }
+    }
+
+    private static Person[] RAW_DATA = new Person[]{
+            new Person(0, "Harry"),
+            new Person(0, "Harry"), // дубликат
+            new Person(1, "Harry"), // тёзка
+            new Person(2, "Harry"),
+            new Person(3, "Emily"),
+            new Person(4, "Jack"),
+            new Person(4, "Jack"),
+            new Person(5, "Amelia"),
+            new Person(5, "Amelia"),
+            new Person(6, "Amelia"),
+            new Person(7, "Amelia"),
+            new Person(8, "Amelia"),
+    };
+
+    public static void main(String[] args) {
+        List<Person> sorted = Arrays.stream(RAW_DATA)
+                .sorted(Comparator.comparing(Person::getName))
+                .collect(Collectors.toList());
+        Map<String, Long> key = Arrays.stream(RAW_DATA)
+                .distinct()
+                .collect(Collectors.groupingBy(Person::getName, Collectors.counting()));
+        for (Map.Entry<String, Long> item : key.entrySet()) {
+            System.out.println("Key:" + item.getKey());
+            System.out.println("Value:" + item.getValue());
+        }
+    }
